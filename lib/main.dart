@@ -34,35 +34,13 @@ class _RootPageState extends State<RootPage> {
   var count = [];
   var cycle = [];
 
-  var meterState = 0;
-  var countState = 0;
-  var cycleState = 0;
-
-  addNameArr(name) {
+  addNameArr(met, cou, cyc, name) {
     // 자식 위젯에서 입력한 값을 전달받아 Array Update
     setState(() {
+      meter.add(met);
+      count.add(cou);
+      cycle.add(cyc);
       description.add(name);
-      // meter.add(meter);
-      // count.add(count);
-      // cycle.add(cycle);
-    });
-  }
-
-  meterArr(m) {
-    setState(() {
-      meter.add(m);
-    });
-  }
-
-  countArr(c) {
-    setState(() {
-      count.add(c);
-    });
-  }
-
-  cycleArr(c) {
-    setState(() {
-      cycle.add(c);
     });
   }
 
@@ -80,9 +58,7 @@ class _RootPageState extends State<RootPage> {
         itemCount: description.length,
         itemBuilder: (c, i) {
           return ListTile(
-            leading: Text(
-              meter[i].toString(),
-            ),
+            leading: Text('${meter[i].toString()}M'),
             title: TextButton(
               child: Text(
                 description[i],
@@ -106,9 +82,6 @@ class _RootPageState extends State<RootPage> {
                 setState(
                   () {
                     // debugPrint('');
-                    // meter[i] += 25;
-                    // count[i] += 1;
-                    // cycle[i] += 10;
                   },
                 );
               },
@@ -122,9 +95,9 @@ class _RootPageState extends State<RootPage> {
             builder: (context) {
               return InsertDialogUI(
                 addNameArr: addNameArr,
-                meterArr: meterArr,
-                countArr: countArr,
-                cycleArr: cycleArr,
+                // meterArr: meterArr,
+                // countArr: countArr,
+                // cycleArr: cycleArr,
               );
             }),
         child: const Icon(Icons.add),
@@ -175,6 +148,11 @@ class DialogUI extends StatelessWidget {
           onPressed: () => Navigator.pop(context, 'OK'),
           child: const Text('확인'),
         ),
+        ElevatedButton(
+          // 이 부분에서 출발 타이머 실행 해야 한다
+          onPressed: () => Navigator.pop(context, 'OK'),
+          child: const Text('출발'),
+        ),
       ],
     );
   }
@@ -202,14 +180,17 @@ class InsertDialogUI extends StatelessWidget {
         children: <Widget>[
           // 이 부분에 미터 개수 초 피커 추가 해야 함
           TextField(
+            keyboardType: TextInputType.number,
             controller: _meterFieldController,
             decoration: const InputDecoration(hintText: "미터 설정"),
           ),
           TextField(
+            keyboardType: TextInputType.number,
             controller: _countFieldController,
             decoration: const InputDecoration(hintText: "개수 설정"),
           ),
           TextField(
+            keyboardType: TextInputType.number,
             controller: _cycleFieldController,
             decoration: const InputDecoration(hintText: "초 설정"),
           ),
@@ -235,10 +216,9 @@ class InsertDialogUI extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: () {
-            addNameArr(_textFieldController.text);
-            meterArr(_meterFieldController.text);
-            countArr(_countFieldController.text);
-            cycleArr(_cycleFieldController.text);
+            addNameArr(_meterFieldController.text, _countFieldController.text,
+                _cycleFieldController.text, _textFieldController.text);
+
             Navigator.pop(context);
           },
           child: const Text('확인'),
