@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       darkTheme: ThemeData.dark(),
       theme: ThemeData(
-          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.amber)),
+          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue)),
       home: RootPage(),
     );
   }
@@ -34,8 +34,19 @@ class _RootPageState extends State<RootPage> {
   var count = [];
   var cycle = [];
 
+  removeNameArr(met, cou, cyc, name) {
+    print('삭제 버튼 클림');
+    setState(() {
+      meter.remove(met);
+      count.remove(cou);
+      cycle.remove(cyc);
+      description.remove(name);
+    });
+  }
+
   addNameArr(met, cou, cyc, name) {
     // 자식 위젯에서 입력한 값을 전달받아 Array Update
+    print('추가 버튼 클림');
     setState(() {
       meter.add(met);
       count.add(cou);
@@ -58,7 +69,8 @@ class _RootPageState extends State<RootPage> {
         itemCount: description.length,
         itemBuilder: (c, i) {
           return ListTile(
-            leading: Text('${meter[i].toString()}M'),
+            leading: Text(
+                '[${meter[i].toString()}미터]  [${count[i].toString()}개]  [${cycle[i].toString()}초]'),
             title: TextButton(
               child: Text(
                 description[i],
@@ -77,11 +89,14 @@ class _RootPageState extends State<RootPage> {
               ),
             ),
             trailing: ElevatedButton(
-              child: const Text('GO'),
+              child: const Text(
+                '삭제',
+              ),
               onPressed: () {
                 setState(
                   () {
-                    // debugPrint('');
+                    // 이 부분에서 삭제 구현
+                    removeNameArr(meter[i], count[i], cycle[i], description[i]);
                   },
                 );
               },
@@ -118,14 +133,16 @@ class DialogUI extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       // RoundedRectangleBorder - Dialog 화면 모서리 둥글게 조절
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
       backgroundColor: Colors.white,
       //Dialog Main Title
       title: Column(
         children: <Widget>[
           Text("훈련 소개"),
           Text('${Meter}미터'),
-          Text('${Count}개수'),
+          Text('${Count}개'),
           Text('${Cycle}초'),
         ],
       ),
@@ -136,6 +153,7 @@ class DialogUI extends StatelessWidget {
         children: <Widget>[
           Text(
             "설명 : ${Name}",
+            style: TextStyle(fontSize: 30),
           ),
         ],
       ),
